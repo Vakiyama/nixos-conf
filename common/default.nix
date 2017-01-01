@@ -19,6 +19,7 @@
   systemd.tmpfiles.rules = [
     "d /etc/nixos 0775 root nix"
   ];
+  services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
     _1password-gui
@@ -61,7 +62,8 @@
   services.openssh.enable = true;
   services.blueman.enable = true;
 
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.trustedInterfaces = [ "p2p-wl+" ];
+  networking.firewall.allowedTCPPorts = [ 7236 7250 ];
+  networking.firewall.allowedUDPPorts = [ 7236 5353 ];
   networking.firewall.enable = true;
 }
