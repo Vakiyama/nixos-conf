@@ -24,7 +24,7 @@ in
     };
 
     nixpkgs.config.permittedInsecurePackages = [
-       "electron-24.8.6"
+       "electron-25.9.0"
     ];
 
     programs.bash.shellAliases = {
@@ -122,6 +122,26 @@ in
 
     sound.enable = true;
     hardware.pulseaudio.enable = true;
+    services.postgresql = {
+        enable = true;
+        ensureDatabases = [ "dmfnew5" ];
+        enableTCPIP = true;
+        package = pkgs.postgresql_14;
+        authentication = pkgs.lib.mkOverride 10 ''
+          #type database  DBuser  auth-method
+          local all all trust
+          host dmfnew5 postgres all trust
+        '';
+# this does nothing
+#       initialScript = pkgs.writeText "backend-initScript" ''
+#          CREATE ROLE fdc WITH LOGIN PASSWORD 'test' CREATEDB;
+#          CREATE DATABASE dmfnew3;
+#          GRANT ALL PRIVILEGES ON DATABASE dmfnew3 TO fdc;
+#        '';
+        #ba.conf entry for host "::1", user "dmfuser", database "fdcdevelopment", no encryption\n')
+    };
+    #psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  no pg_hba.conf entry for host "::1", user "postgres", database "fdcdevelopment", no encryption
+
 
 
     users.users.Root = {
@@ -157,6 +177,11 @@ in
             zlib
             starship
             yq-go
+            pciutils
+            tridactyl-native
+            steam
+#r2modman
+            lutris
 
             unstable.ticktick
             htop-vim
@@ -232,5 +257,5 @@ in
 # this value at the release version of the first install of this system.
 # Before changing this value read the documentation for this option
 # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    system.stateVersion = "unstable"; # Did you read the comment?
+    system.stateVersion = "23.11"; # Did you read the comment?
 }

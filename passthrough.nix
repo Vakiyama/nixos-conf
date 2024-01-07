@@ -3,6 +3,7 @@ let
   gpuIDs = [
     "10de:2786" # vga 
     "10de:22bc" # audio 
+    #"10ec:8125" # wireless card
   ];
 in { pkgs, lib, config, ... }: {
   options.vfio.enable = with lib;
