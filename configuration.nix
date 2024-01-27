@@ -2,64 +2,55 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, callPackage, ... }:
+{ config, pkgs, ... }:
 
 with pkgs;
 let 
-    unstable = import <unstable> { config.allowUnfree = true; };
-    RStudio-with-my-packages = rstudioWrapper.override{ packages = with rPackages; [ mosaic ]; };
+  unstable = import <nixos-unstable> { config.allowUnfree = true; };
+  # RStudio-with-my-packages = rstudioWrapper.override{ packages = with rPackages; [ mosaic ]; };
 in
 {
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
-    fonts.fonts = with pkgs; [ 
-        (nerdfonts.override { fonts = ["FiraCode" "DroidSansMono" ];}) 
-    ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  fonts.fonts = with pkgs; [ 
+      (nerdfonts.override { fonts = ["FiraCode" "DroidSansMono" ];}) 
+  ];
 
-    #/home/Root/projects/custom-nixpkgs/super-productivity
-    nixpkgs.config = { 
-        allowUnfree = true;
-    #    packageOverrides = pkgs: {
-    #        mySuperProductivity = import ./super-productivity { inherit pkgs; };
-    #    };
-    };
+  #/home/Root/projects/custom-nixpkgs/super-productivity
+  nixpkgs.config = { 
+      allowUnfree = true;
+  #    packageOverrides = pkgs: {
+  #        mySuperProductivity = import ./super-productivity { inherit pkgs; };
+  #    };
+  };
 
-    nixpkgs.config.permittedInsecurePackages = [
-       "electron-25.9.0"
-    ];
+  nixpkgs.config.permittedInsecurePackages = [
+     "electron-25.9.0"
+     "electron-19.1.9"
+  ];
 
-    programs.bash.shellAliases = {
-        vi = "nvim";
-    };
+  programs.bash.shellAliases = {
+    rm = "rip";
+    vi = "nvim";
+    ls = "exa --icons -F -H --group-directories-first --git -1";
+    lt = "exa --tree --level=2 --long --icons --git";
+  };
 
-    imports = [ ./hardware-configuration.nix ./passthrough.nix ];
+  imports = [ ./hardware-configuration.nix ./passthrough.nix ];
 
-    specialisation."VFIO".configuration = {
-        system.nixos.tags = [ "with-vfio" ];
-        vfio.enable = true;
-    };
-    programs.neovim.enable = true;
-    security.tpm2.enable = true;
-    security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
-    security.tpm2.tctiEnvironment.enable = true;  # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
-    # Enable dconf (System Management Tool)
+  specialisation."VFIO".configuration = {
+      system.nixos.tags = [ "with-vfio" ];
+      vfio.enable = true;
+  };
+  programs.neovim.enable = true;
+  security.tpm2.enable = true;
+  security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+  security.tpm2.tctiEnvironment.enable = true;  # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
+  # Enable dconf (System Management Tool)
 
   # Add user to libvirtd group
 
   # Install necessary packages
 
-  # Manage the virtualisation services
-  virtualisation = {
-    docker.enable = true;
-    libvirtd = {
-      enable = true; # disable when working with android
-      qemu = {
-        swtpm.enable = true;
-        ovmf.enable = true;
-        ovmf.packages = [ pkgs.OVMFFull.fd ];
-      };
-    };
-    spiceUSBRedirection.enable = true;
-  };
   services.spice-vdagentd.enable = true;
   services.udev.extraRules = ''
                             # Rules for Oryx web flashing and live training
@@ -87,13 +78,13 @@ in
                         '';
   users.groups.plugdev = {};
 
-# Bootloader.
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-    networking.hostName = "Poison"; # Define your hostname.
-# Enable networking
-        networking.networkmanager.enable = true;
+  networking.hostName = "Poison"; # Define your hostname.
+  # Enable networking
+  networking.networkmanager.enable = true;
 
 # Set your time zone.
     time.timeZone = "America/Vancouver";
@@ -107,7 +98,7 @@ in
         driSupport32Bit = true;
     };
 
-    services.xserver.videoDrivers = ["nvidia"];
+    services.xserver.videoDrivers = [ "nvidia" ];
     hardware.nvidia = {
         modesetting.enable = true;
         open = false;
@@ -117,11 +108,25 @@ in
 
     hardware.bluetooth = {
         enable = true;
-        powerOnBoot = true;
+        settings = {
+          General = {
+            Name = "Hello";
+            ControllerMode = "dual";
+            FastConnectable = "true";
+            Experimental = "true";
+          };
+          Policy = {
+            AutoEnable = "true";
+          };
+        };
     };
 
     sound.enable = true;
     hardware.pulseaudio.enable = true;
+    services.mysql = {
+        enable = true;
+        package = pkgs.mysql80;
+    };
     services.postgresql = {
         enable = true;
         ensureDatabases = [ "dmfnew5" ];
@@ -150,7 +155,6 @@ in
         packages = with pkgs;[
             home-manager
 
-            opera
             google-chrome
             discord
             spotify
@@ -173,19 +177,33 @@ in
             docker # maybe should be in flakes?
             ripgrep
             simplescreenrecorder
-            RStudio-with-my-packages
             zlib
             starship
             yq-go
             pciutils
             tridactyl-native
             steam
-#r2modman
+            mysql-workbench
+            gnome.gnome-keyring
+            shutter
             lutris
+            etcher
+            ngrok
+            unstable.r2modman
+            ocaml
+            opam
+            dune_3
+            ocamlPackages.merlin
+            SDL2
+            git-graph
 
             unstable.ticktick
             htop-vim
             bottom
+            prettierd
+
+            eza # better ls (exa)
+            rm-improved # safer rm (rip)
         ];
     };
     programs.dconf.enable = true;
@@ -206,6 +224,8 @@ in
             fzf
             tmux
             linuxPackages.nvidia_x11
+            gnumake42
+            vulkan-tools
     ];
 
 
@@ -214,13 +234,15 @@ in
     services.openssh.enable = true;
     services.blueman.enable = true;
     services.picom.enable = true;
-
+    services.gnome3.gnome-keyring.enable = true;
     services.xserver = {
         enable = true;
 
         libinput.mouse = {
             accelProfile = "flat";
+            middleEmulation = false;
         };
+
         desktopManager = {
             xterm.enable = false;
             xfce = {
