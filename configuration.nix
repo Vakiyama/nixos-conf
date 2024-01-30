@@ -35,12 +35,8 @@ in
     lt = "exa --tree --level=2 --long --icons --git";
   };
 
-  imports = [ ./hardware-configuration.nix ./passthrough.nix ];
+  imports = [ ./hardware-configuration.nix ];
 
-  specialisation."VFIO".configuration = {
-      system.nixos.tags = [ "with-vfio" ];
-      vfio.enable = true;
-  };
   programs.neovim.enable = true;
   security.tpm2.enable = true;
   security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
@@ -162,15 +158,6 @@ in
             i3-rounded
             feh
 
-            # all vm related
-            virt-manager
-            virt-viewer
-            spice spice-gtk
-            spice-protocol
-            win-virtio
-            win-spice
-            scream # low-latency audio for win11 VM
-
             gnome.adwaita-icon-theme
             obsidian
             slack
@@ -194,7 +181,6 @@ in
             opam
             dune_3
             ocamlPackages.merlin
-            SDL2
             git-graph
 
             unstable.ticktick
@@ -260,7 +246,8 @@ in
             enable = true;
             package = pkgs.i3-rounded;
             extraPackages = with pkgs; [
-                dmenu
+                #dmenu
+                rofi
                 i3status
                 i3lock
             ];
