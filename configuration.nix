@@ -171,7 +171,6 @@ in
             opam
             dune_3
             ocamlPackages.merlin
-            SDL2
             git-graph
 
             htop-vim
@@ -235,7 +234,8 @@ in
             enable = true;
             package = pkgs.i3-rounded;
             extraPackages = with pkgs; [
-                dmenu
+                #dmenu
+                rofi
                 i3status
                 i3lock
             ];
