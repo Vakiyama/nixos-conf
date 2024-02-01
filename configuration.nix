@@ -7,7 +7,6 @@
 with pkgs;
 let 
   unstable = import <nixos-unstable> { config.allowUnfree = true; };
-  # RStudio-with-my-packages = rstudioWrapper.override{ packages = with rPackages; [ mosaic ]; };
 in
 {
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -35,12 +34,8 @@ in
     lt = "exa --tree --level=2 --long --icons --git";
   };
 
-  imports = [ ./hardware-configuration.nix ./passthrough.nix ];
+  imports = [ ./hardware-configuration.nix ];
 
-  specialisation."VFIO".configuration = {
-      system.nixos.tags = [ "with-vfio" ];
-      vfio.enable = true;
-  };
   programs.neovim.enable = true;
   security.tpm2.enable = true;
   security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
@@ -96,14 +91,6 @@ in
         enable = true;
         driSupport = true;
         driSupport32Bit = true;
-    };
-
-    services.xserver.videoDrivers = [ "nvidia" ];
-    hardware.nvidia = {
-        modesetting.enable = true;
-        open = false;
-        nvidiaSettings = true;
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
 
     hardware.bluetooth = {
@@ -162,19 +149,9 @@ in
             i3-rounded
             feh
 
-            # all vm related
-            virt-manager
-            virt-viewer
-            spice spice-gtk
-            spice-protocol
-            win-virtio
-            win-spice
-            scream # low-latency audio for win11 VM
-
             gnome.adwaita-icon-theme
             obsidian
             slack
-            docker # maybe should be in flakes?
             ripgrep
             simplescreenrecorder
             zlib
@@ -197,9 +174,7 @@ in
             SDL2
             git-graph
 
-            unstable.ticktick
             htop-vim
-            bottom
             prettierd
 
             eza # better ls (exa)
