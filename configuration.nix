@@ -203,6 +203,7 @@ in
             git
             gcc
             nodejs_20
+            yarn
             bun
             cargo
             wget
