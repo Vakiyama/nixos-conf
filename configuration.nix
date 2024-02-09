@@ -227,6 +227,7 @@ in
 
             eza # better ls (exa)
             rm-improved # safer rm (rip)
+            kdenlive
         ];
     };
     programs.dconf.enable = true;
