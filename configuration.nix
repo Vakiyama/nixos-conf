@@ -7,7 +7,6 @@
 with pkgs;
 let 
   unstable = import <nixos-unstable> { config.allowUnfree = true; };
-  # RStudio-with-my-packages = rstudioWrapper.override{ packages = with rPackages; [ mosaic ]; };
 in
 {
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -92,14 +91,6 @@ in
         enable = true;
         driSupport = true;
         driSupport32Bit = true;
-    };
-
-    services.xserver.videoDrivers = [ "nvidia" ];
-    hardware.nvidia = {
-        modesetting.enable = true;
-        open = false;
-        nvidiaSettings = true;
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
 
     hardware.bluetooth = {
@@ -198,7 +189,6 @@ in
             gnome.adwaita-icon-theme
             obsidian
             slack
-            docker # maybe should be in flakes?
             ripgrep
             simplescreenrecorder
             zlib
@@ -220,9 +210,7 @@ in
             ocamlPackages.merlin
             git-graph
 
-            unstable.ticktick
             htop-vim
-            bottom
             prettierd
 
             eza # better ls (exa)
