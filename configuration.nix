@@ -243,6 +243,14 @@ in
 
 
 
+    hardware.nvidia = {
+      modesetting.enable = true;
+      powerManagement.enable = false;
+
+      open = false;
+      nvidiaSettings = true;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+    };
 # Enable the OpenSSH daemon.
     services.openssh.enable = true;
     services.blueman.enable = true;
@@ -250,6 +258,7 @@ in
     services.gnome3.gnome-keyring.enable = true;
     services.xserver = {
         enable = true;
+        videoDrivers = [ "nvidia" ]; 
 
         libinput.mouse = {
             accelProfile = "flat";
