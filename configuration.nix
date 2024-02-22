@@ -216,6 +216,7 @@ in
             eza # better ls (exa)
             rm-improved # safer rm (rip)
             kdenlive
+            obs-studio
         ];
     };
     programs.dconf.enable = true;
