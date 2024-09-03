@@ -26,6 +26,7 @@ in
   nixpkgs.config.permittedInsecurePackages = [
      "electron-25.9.0"
      "electron-19.1.9"
+     "qtwebkit-5.212.0-alpha4" # dmf backend flake
   ];
 
   programs.bash.shellAliases = {
@@ -34,6 +35,11 @@ in
     ls = "exa --icons -F -H --group-directories-first --git -1";
     lt = "exa --tree --level=2 --long --icons --git";
   };
+
+  # Blacklist the bcma module
+  boot.blacklistedKernelModules = [ "bcma" ];
+  hardware.firmware = [ pkgs.linux-firmware ];
+  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
 
   imports = [ ./hardware-configuration.nix ];
 
@@ -81,6 +87,7 @@ in
   networking.hostName = "Poison"; # Define your hostname.
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
 # Set your time zone.
     time.timeZone = "America/Vancouver";
@@ -148,7 +155,29 @@ in
     };
 
     sound.enable = true;
+    # hardware.pulseaudio.enable = true;
+    # rtkit is optional but recommended
+    security.rtkit.enable = true;
     hardware.pulseaudio.enable = true;
+
+    #services.pipewire = {
+    #  enable = true;
+    #  alsa.enable = true;
+    #  alsa.support32Bit = true;
+    #  pulse.enable = true;
+    #  # If you want to use JACK applications, uncomment this
+    #  #jack.enable = true;
+    #};
+
+    services.pipewire.extraConfig.pipewire."92-low-latency" = {
+      context.properties = {
+        default.clock.rate = 48000;
+        default.clock.quantum = 32;
+        default.clock.min-quantum = 32;
+        default.clock.max-quantum = 32;
+      };
+    };
+
     services.mysql = {
         enable = true;
         package = pkgs.mysql80;
@@ -174,9 +203,12 @@ in
     #psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  no pg_hba.conf entry for host "::1", user "postgres", database "fdcdevelopment", no encryption
 
 
+            
+
     users.users.Root = {
         isNormalUser = true;
-        extraGroups = ["wheel" "audio" "libvirtd" "tss" "docker" "adbusers" "plugdev"];
+        extraGroups = ["wheel" "audio" "libvirtd" "tss" "docker" "adbusers" "plugdev" "docker"];
+        shell = pkgs.bash;
         packages = with pkgs;[
             home-manager
 
@@ -202,7 +234,6 @@ in
             gnome.gnome-keyring
             shutter
             lutris
-            etcher
             ngrok
             unstable.r2modman
             ocaml
@@ -217,17 +248,36 @@ in
             eza # better ls (exa)
             rm-improved # safer rm (rip)
             kdenlive
+            obs-studio
+            gleam
+            erlang
+            rebar3
+            pgmodeler
+            pulseeffects-legacy
+
+            prismlauncher
+            wine64
+            wineWow64Packages.full
+            samba
+
+            ytfzf
+            ueberzugpp
+            mpv
         ];
     };
     programs.dconf.enable = true;
     programs.adb.enable = true;
+    virtualisation.docker.enable = true;
+
 
 # List packages installed in system profile. To search, run:
 # $ nix search wget
     environment.systemPackages = with pkgs; [
-        _1password-gui
+            _1password-gui
+            curl
             firefox
             git
+            git-lfs
             gcc
             nodejs_20
             yarn
@@ -240,6 +290,12 @@ in
             linuxPackages.nvidia_x11
             gnumake42
             vulkan-tools
+            jq
+          (lutris.override {
+            extraLibraries =  pkgs: [
+              # List library dependencies here
+            ];
+          })
     ];
 
 
@@ -256,7 +312,7 @@ in
     services.openssh.enable = true;
     services.blueman.enable = true;
     services.picom.enable = true;
-    services.gnome3.gnome-keyring.enable = true;
+    # services.gnome3.gnome-keyring.enable = true;
     services.xserver = {
         enable = true;
         #videoDrivers = [ "nvidia" ]; 
@@ -303,5 +359,5 @@ in
 # this value at the release version of the first install of this system.
 # Before changing this value read the documentation for this option
 # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    system.stateVersion = "23.11"; # Did you read the comment?
+    system.stateVersion = "24.05"; # Did you read the comment?
 }
