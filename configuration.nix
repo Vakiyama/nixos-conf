@@ -168,6 +168,29 @@ in
     #  # If you want to use JACK applications, uncomment this
     #  #jack.enable = true;
     #};
+    
+    /*
+    services.nginx = {
+      enable = true;
+      virtualHosts."localhost" = {
+        root = "/var/www/webadmin.org";
+      };
+    };
+    */
+
+    services.httpd = {
+      enable = false;
+      adminAddr = "vakiyama@outlook.com";
+      virtualHosts."localhost" = {
+        documentRoot = "/var/www/webadmin.org";
+      };
+    };
+
+    systemd.tmpfiles.rules = [
+      "d /var/www/webadmin.org"
+    ];
+
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
 
     services.pipewire.extraConfig.pipewire."92-low-latency" = {
       context.properties = {
@@ -263,6 +286,9 @@ in
             ytfzf
             ueberzugpp
             mpv
+
+            python3
+            unzip
         ];
     };
     programs.dconf.enable = true;
