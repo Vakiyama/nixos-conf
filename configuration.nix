@@ -17,6 +17,8 @@ in
   #/home/Root/projects/custom-nixpkgs/super-productivity
   nixpkgs.config = {
     allowUnfree = true;
+    allowBroken = true;
+    nvidia.acceptLicense = true;
     #    packageOverrides = pkgs: {
     #        mySuperProductivity = import ./super-productivity { inherit pkgs; };
     #    };
@@ -50,6 +52,7 @@ in
 
   # Add user to libvirtd group
 
+  boot.kernelModules = [ "kvm-amd" "kvm-intel" ];
   virtualisation.libvirtd = {
     enable = true;
     qemu = {
@@ -116,9 +119,12 @@ in
   i18n.defaultLocale = "en_CA.UTF-8";
 
   hardware.opengl = {
-    driSupport = true;
+    enable = true;
     driSupport32Bit = true;
   };
+
+  hardware.steam-hardware.enable = true;
+  programs.java.enable = true;
 
   hardware.bluetooth = {
     enable = true;
@@ -173,20 +179,19 @@ in
     };
   };
 
-  sound.enable = true;
   # hardware.pulseaudio.enable = true;
   # rtkit is optional but recommended
   security.rtkit.enable = true;
-  hardware.pulseaudio.enable = true;
+  # hardware.pulseaudio.enable = true;
 
-  #services.pipewire = {
-  #  enable = true;
-  #  alsa.enable = true;
-  #  alsa.support32Bit = true;
-  #  pulse.enable = true;
-  #  # If you want to use JACK applications, uncomment this
-  #  #jack.enable = true;
-  #};
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
 
   services.pipewire.extraConfig.pipewire."92-low-latency" = {
     context.properties = {
@@ -222,9 +227,10 @@ in
   # };
 
 
+
   users.users.Root = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "audio" "libvirtd" "tss" "docker" "adbusers" "plugdev" "docker" ];
+    extraGroups = [ "wheel" "audio" "libvirtd" "qemu-libvirtd" "tss" "docker" "adbusers" "plugdev" "docker" ];
     shell = pkgs.bash;
     packages = with pkgs;[
       home-manager
@@ -247,6 +253,14 @@ in
       pciutils
       tridactyl-native
       steam
+      steam-run
+      (steam.override {
+        extraPkgs = pkgs: [ bumblebee glxinfo ];
+        extraProfile = ''
+          export VK_ICD_FILENAMES=${config.hardware.nvidia.package}/share/vulkan/icd.d/nvidia_icd.json:${config.hardware.nvidia.package.lib32}/share/vulkan/icd.d/nvidia_icd32.json:$VK_ICD_FILENAMES
+        '';
+      }).run
+      vulkan-tools
       mysql-workbench
       gnome.gnome-keyring
       shutter
@@ -285,14 +299,20 @@ in
 
       luajitPackages.luarocks
       unzip
+
+      pavucontrol
+      webcord-vencord
     ];
   };
+
+  programs.virt-manager.enable = true;
   programs.dconf.enable = true;
   programs.adb.enable = true;
   virtualisation.docker.enable = true;
 
   services.httpd.enable = true;
   services.httpd.adminAddr = "webmaster@example.org";
+
 
 
 
@@ -331,6 +351,7 @@ in
     fuzzel
     mako
     networkmanagerapplet
+    wl-clipboard
   ];
 
   programs.hyprland = {
@@ -338,11 +359,11 @@ in
     xwayland.enable = true;
   };
 
-  # services.dbus.enable = true;
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-  # };
+  services.dbus.enable = true;
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+  };
 
 
   environment.sessionVariables = {
