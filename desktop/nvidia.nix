@@ -3,6 +3,7 @@
   hardware = {
     graphics = {
       enable = true;
+      enable32Bit = true;
     };
     nvidia = {
       modesetting.enable = true;
@@ -13,12 +14,7 @@
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.production;
     };
-    opengl = {
-      enable = true;
-      driSupport32Bit = true;
-    };
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
-
 }
