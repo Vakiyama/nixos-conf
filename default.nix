@@ -4,8 +4,5 @@
 
 { ... }:
 {
-  imports = [ ./common ./desktop ];
-
-  # don't change xd
-  system.stateVersion = "24.05";
+  imports = [ ./common ./laptop ];
 }
