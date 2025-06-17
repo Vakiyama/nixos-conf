@@ -12,7 +12,6 @@
     ./misc.nix
     ./notes.nix
     ./bluetooth.nix
-    ./alias.nix
     ./fish.nix
   ];
 
@@ -33,6 +32,7 @@
     networkmanagerapplet
     wl-clipboard
     fd
+    exa
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
