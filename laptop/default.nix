@@ -1,8 +1,8 @@
 { ... }:
 {
   imports = [
-    ./nvidia.nix
     ./hardware-configuration.nix
+    ./graphics.nix
   ];
 
   # don't change xd
