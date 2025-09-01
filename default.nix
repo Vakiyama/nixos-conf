@@ -4,5 +4,5 @@
 
 { ... }:
 {
-  imports = [ ./common ./laptop ];
+  imports = [ ./common ./desktop ];
 }
