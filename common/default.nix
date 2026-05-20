@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   imports = [
     ./hyprland.nix
@@ -32,7 +32,10 @@
     networkmanagerapplet
     wl-clipboard
     fd
-    exa
+    usbutils
+    lazygit
+    zip
+    unzip
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -57,7 +60,16 @@
   services.openssh.enable = true;
   services.blueman.enable = true;
 
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  # dolphin emulator for wii
+  services.udev.packages = [ pkgs.dolphin-emu ];
+  boot.kernelModules = [
+    "gcadapter_oc"
+  ];
+  boot.extraModulePackages = [
+    config.boot.kernelPackages.gcadapter-oc-kmod
+  ];
+
+  networking.firewall.allowedTCPPorts = [ 8081 ];
+  networking.firewall.allowedUDPPorts = [ 8081 ];
   networking.firewall.enable = true;
 }
