@@ -7,7 +7,7 @@
         Name = "Hello";
         ControllerMode = "dual";
         FastConnectable = "true";
-        Experimental = "true";
+        Disable = "Headset,Gateway";
       };
       Policy = {
         AutoEnable = "true";

@@ -6,6 +6,13 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     #jack.enable = true;
+    wireplumber.extraConfig = {
+      "51-disable-hfp" = {
+        "monitor.bluez.properties" = {
+          "bluez5.headset-roles" = [ ];
+        };
+      };
+    };
   };
 
   security.rtkit.enable = true;
