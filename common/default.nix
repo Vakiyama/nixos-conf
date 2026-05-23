@@ -66,11 +66,6 @@
   services.openssh.enable = true;
   services.blueman.enable = true;
 
-<<<<<<< HEAD
-  networking.firewall.trustedInterfaces = [ "p2p-wl+" ];
-  networking.firewall.allowedTCPPorts = [ 7236 7250 ];
-  networking.firewall.allowedUDPPorts = [ 7236 5353 ];
-=======
   # dolphin emulator for wii
   services.udev.packages = [ pkgs.dolphin-emu ];
   boot.kernelModules = [
@@ -82,6 +77,5 @@
 
   networking.firewall.allowedTCPPorts = [ 8081 ];
   networking.firewall.allowedUDPPorts = [ 8081 ];
->>>>>>> origin/main
   networking.firewall.enable = true;
 }
