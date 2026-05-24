@@ -14,4 +14,6 @@
       };
     };
   };
+
+  boot.kernelModules = [ "bluetooth" ];
 }
