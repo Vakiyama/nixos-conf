@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, pkgs-unstable, config, ... }:
 {
   imports = [
     ./hyprland.nix
@@ -22,7 +22,8 @@
   services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
-    _1password-gui
+    pkgs-unstable._1password-gui
+    pkgs-unstable.opencode
     curl
     firefox
     git
@@ -46,7 +47,7 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
   users.users.Root = {
     isNormalUser = true;
