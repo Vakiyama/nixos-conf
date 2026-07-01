@@ -2,5 +2,5 @@
 { pkgs, ...}:
 
 {
-  hardware.graphics.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+  hardware.graphics.extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];
 }
