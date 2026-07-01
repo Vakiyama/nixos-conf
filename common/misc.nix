@@ -1,6 +1,11 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   boot.blacklistedKernelModules = [ "bcma" ];
+
+
+  nixpkgs.config.allowInsecurePredicate = pkg:
+    builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
+
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
 
   services.spice-vdagentd.enable = true;
@@ -18,6 +23,5 @@
 
 
   programs.dconf.enable = true;
-  programs.adb.enable = true;
   virtualisation.docker.enable = true;
 }

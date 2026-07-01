@@ -1,10 +1,13 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+    };
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, ... }:
+  outputs = { nixpkgs, nixpkgs-unstable, sops-nix, ... }:
     let
       system = "x86_64-linux";
       pkgs-unstable = import nixpkgs-unstable {
@@ -16,7 +19,10 @@
       nixosConfigurations."Poison" = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit pkgs-unstable; };
-        modules = [ ./default.nix ];
+        modules = [ 
+          ./default.nix
+          sops-nix.nixosModules.sops
+        ];
       };
     };
 }
