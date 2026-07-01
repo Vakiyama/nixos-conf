@@ -1,0 +1,10 @@
+keys:
+  - &admin_vitor age1g7e38rv5nsknt8rpl5pplzndtlrndrn6svvamchjw0xylr9dpytq4vftv6
+  - &host_box    age1h4t362tcf9gz0l7d6ph23efpjksxte2uf0v8ukzefl7hsrf0gsqqrd5wf3
+creation_rules:
+  - path_regex: secrets\.ya?ml$
+    key_groups:
+      - age:
+          - *admin_vitor
+          - *host_box
+

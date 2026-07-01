@@ -1,5 +1,6 @@
-{ pkgs, pkgs-unstable, config, ... }:
+{ pkgs, pkgs-unstable, config, lib, ... }:
 {
+
   imports = [
     ./hyprland.nix
     ./unfree.nix
@@ -23,7 +24,6 @@
 
   environment.systemPackages = with pkgs; [
     pkgs-unstable._1password-gui
-    pkgs-unstable.opencode
     curl
     firefox
     git
@@ -45,9 +45,12 @@
     unzip
   ];
 
+  nix.settings.auto-optimise-store = true;
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    nerd-fonts.fira-code
   ];
   users.users.Root = {
     isNormalUser = true;
@@ -62,6 +65,8 @@
 
 
   services.dbus.enable = true;
+  services.gnome.gnome-keyring.enable = true;        # provides org.freedesktop.secrets, activatable
+  security.pam.services.login.enableGnomeKeyring = true;
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
