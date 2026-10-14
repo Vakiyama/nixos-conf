@@ -32,5 +32,5 @@
   # rather run docker inside the distro instead, uncomment:
   # virtualisation.docker.enable = true;
 
-  system.stateVersion = "25.05"; # set once at install, then don't change
+  system.stateVersion = "26.05"; # set once at install, then don't change
 }
